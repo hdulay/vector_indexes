@@ -1,5 +1,3 @@
-
-from pgvector.psycopg2 import register_vector
 import psycopg
 from sentence_transformers import SentenceTransformer
 from PIL import Image

@@ -3,54 +3,50 @@
 
 ## PG Vector
 
-Open-source vector similarity search for Postgres. Store your vectors with the rest of your data.
+Open-source vector similarity search for Postgres. Store your vectors with the rest of your data. It is implemented as a Postgres extension that needs to be installed and enabled. Follow the installation instructions for pgvector [here](https://github.com/pgvector/pgvector).
 
-## Sentence Transformers
-
-SentenceTransformers provides models that allow to embed images and text into the same vector space. This allows to find similar images as well as to implement image search. SentenceTransformers provides a wrapper for the OpenAI CLIP Model, which was trained on a variety of (image, text)-pairs. You can read more [here](https://www.sbert.net/examples/applications/image-search/README.html?highlight=image).
-
-## Vecs
-
-Similar to LangChain, Vecs is a Python client library for managing and querying vector stores in PostgreSQL, leveraging the capabilities of the pgvector extension.
-
-## OpenAI
-
-Create a `.env` file to add your OpenAPI key
-
-```properties
-OPENAI_API_KEY=foobar
-```
-
-## Python
-
-```bash
-pip install  --upgrade --quiet  -r requirements.txt 
-```
-
-## Postgres
+Alternatively, You can use docker compose to stand up a Postgres instance already enabled with `pgvector`.
 
 ```bash
 docker run --name pgvector -d -e POSTGRES_PASSWORD=postgres ankane/pgvector
 docker exec -it pgvector bash
 
 $ psql -U postgres
-
 ```
 
-```sql
-CREATE TABLE pics (id bigserial PRIMARY KEY, embedding vector(512));
+## Sentence Transformer Model
+
+SentenceTransformers provides models that embed images and text into the same vector space. This allows us to find similar images and implement image search. SentenceTransformers provide a wrapper for the OpenAI CLIP Model, which was trained on various (image, text)-pairs. You can read more [here](https://www.sbert.net/examples/applications/image-search/README.html?highlight=image).
+
+
+## Python + Psycopg
+
+Psycopg is a popular python driver for Postgres. We will use it directly with `pgvector` to insert and invoke similarity searches of images.
+
+Create a Python environment and install the Python module requirements.
+
+```bash
+python -m venv .venv
+
+pip install  --upgrade --quiet  -r requirements.txt 
 ```
 
-## Vector Index Setup
+To run the demo, execute the command below. The `-s` will seed the Postgres database with the images in the `images` directory. The `-s` can be omitted. You must reseed the database if you add images or change file names.
 
-```sql
-CREATE EXTENSION vector;
+```bash
+$ python example-psycopg.py -s
+
+seeding the database
+Enter image query: show me a picture of NYC
 ```
 
-## Vecs + Postgres
+The application will pop up a picture closely matching your query and the distance value.
+
+## Vecs
+
+Similar to LangChain, Vecs is a Python client library for managing and querying vector stores in PostgreSQL, leveraging the capabilities of the pgvector extension.
 
 ```sql
 \dt vecs.image_vectors
 ```
-
 

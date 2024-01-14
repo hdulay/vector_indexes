@@ -3,6 +3,7 @@ from sentence_transformers import SentenceTransformer
 import vecs
 from matplotlib import pyplot as plt
 from matplotlib import image as mpimg
+import os, sys
 
 DB_CONNECTION = "postgresql://postgres:postgres@localhost:5432/postgres"
 
@@ -17,39 +18,20 @@ def seed():
     model = SentenceTransformer('clip-ViT-B-32')
 
     # Encode an image:
-    img_emb1 = model.encode(Image.open('./images/one.jpg'))
-    img_emb2 = model.encode(Image.open('./images/two.jpg'))
-    img_emb3 = model.encode(Image.open('./images/three.jpg'))
-    img_emb4 = model.encode(Image.open('./images/four.jpg'))
+    images = os.listdir("./images")
+    records = []
+    for f in images:
+        file = f'./images/{f}'
+        img_emb = model.encode(Image.open(file))
+        records.append((file, img_emb, {"type": "jpg"}))
 
     # add records to the *images* collection
-    images.upsert(
-        records=[
-            (
-                "one.jpg",         # the vector's identifier
-                img_emb1,          # the vector. list or np.array
-                {"type": "jpg"}    # associated  metadata
-            ), (
-                "two.jpg",
-                img_emb2,
-                {"type": "jpg"}
-            ), (
-                "three.jpg",
-                img_emb3,
-                {"type": "jpg"}
-            ), (
-                "four.jpg",
-                img_emb4,
-                {"type": "jpg"}
-            )
-        ]
-    )
+    images.upsert(records=records)
     print("Inserted images")
 
     # index the collection for fast search performance
     images.create_index()
     print("Created index")
-
 
 def search():
     # create vector store client
@@ -80,6 +62,9 @@ def search():
 
 
 if __name__ == '__main__':
-    seed()
+    args = sys.argv
+
+    if len(args) > 1 and args[1] == '-s':
+        seed()
 
     search()
