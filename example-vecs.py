@@ -59,7 +59,7 @@ def search():
     # Load CLIP model
     model = SentenceTransformer('clip-ViT-B-32')
     # Encode text query
-    query_string = "a bike in front of a red brick wall"
+    query_string = input("Enter image query:")
     # query_string = "a picture of black grapes on a vine"
     text_emb = model.encode(query_string)
 
