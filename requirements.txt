@@ -1,0 +1,18 @@
+pgvector
+openai
+psycopg2-binary
+tiktoken
+pathway
+kafka-python
+python-dotenv
+# langchain==0.2.0
+langchain-openai
+langchain-community
+unstructured
+pdf2image
+pdfminer.six
+opencv-python
+unstructured_inference
+pikepdf
+pypdf
+unstructured_pytesseract
